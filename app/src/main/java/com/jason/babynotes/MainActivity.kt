@@ -7,10 +7,10 @@ import androidx.databinding.DataBindingUtil
 import com.jason.babynotes.baseclass.BaseActivity
 import com.jason.babynotes.databinding.ActivityMainBinding
 import com.jason.babynotes.view.HomeFragment
-import com.jason.babynotes.viewmodel.ChangeViewModel
+import com.jason.babynotes.viewmodel.MainViewModel
 
 class MainActivity : BaseActivity() {
-    val viewModel by viewModels<ChangeViewModel>()
+    private val mViewModel by viewModels<MainViewModel>()
     lateinit var mBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +18,8 @@ class MainActivity : BaseActivity() {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         mBinding.apply {
             lifecycleOwner = this@MainActivity
-            toolbarViewModel = viewModel
+            mainViewModel = mViewModel
+
             back.setOnClickListener(View.OnClickListener {
                 if(supportFragmentManager.backStackEntryCount > 0)
                     supportFragmentManager.popBackStack()
@@ -26,6 +27,7 @@ class MainActivity : BaseActivity() {
                     finish()
                 }
             })
+
         }
 
         setContentView(mBinding.root)
