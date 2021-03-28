@@ -4,7 +4,7 @@ import SingleLiveEvent
 import androidx.lifecycle.ViewModel
 
 class ChangeViewModel: ViewModel() {
-    val changeClickEvent = SingleLiveEvent<Boolean>()
+    private val changeClickEvent = SingleLiveEvent<Boolean>()
 
     fun changeView(){
         changeClickEvent.value = true

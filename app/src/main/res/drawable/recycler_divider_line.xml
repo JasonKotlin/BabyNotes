@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--RecyclerView分割線-->
+<!--用法可參考 https://www.itread01.com/content/1545777183.html -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetLeft="5dp"
+    android:insetRight="5dp">
+    <shape>
+        <size android:height="1dp"/>
+        <solid android:color="@color/darkgray"/>
+    </shape>
+</inset>
