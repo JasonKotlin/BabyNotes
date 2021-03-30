@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.jason.babynotes.R
 import com.jason.babynotes.baseclass.BaseFragment
 import com.jason.babynotes.databinding.HomeFragmentBinding
+import com.jason.babynotes.databinding.HomeItemLayoutBinding
 import com.jason.babynotes.viewmodel.HomeFeaturesViewModel
 
 
@@ -54,12 +55,10 @@ class HomeFragment: BaseFragment() {
     }
 
     /**
-     * Q1.每一個 Item 裡面的資料應該可以建一個 Model 出來，我就取那個 Model 來用就好
-     * Q2.如果我用了 holder.itemView.setOnItemclick，這樣我就沒辦法針對最右邊的鬧鐘按鈕做事了對吧？
-     *   網路上的 interface 寫法也是亂七八糟的看不懂 = =" 求教
-     * Q3.有沒有辦法讓 RecyclerView 的高度就是在最下面的 View 上面？
+     * 1. 圓角無效？
+     * 2. RecyclerView 沒辦法滑到更下面？
+     * 3. RecyclerView 的 Binding 似乎哪邊錯了？ view 沒辦法用 home_item_layout 裡面的元件？
      *
-     * TODO 圓角還沒做
      */
     private fun createRecyclerView(){
         val mRecyclerView: RecyclerView = mBinding.recyclerView
@@ -71,8 +70,11 @@ class HomeFragment: BaseFragment() {
 
     class ItemAdapter(val items: List<String>) : RecyclerView.Adapter<ItemAdapter.viewHolder>(){
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.home_item_layout, parent, false)
-            return viewHolder(view)
+            var binding : HomeItemLayoutBinding = HomeItemLayoutBinding.bind(LayoutInflater.from(parent.context)
+                    .inflate(R.layout.home_item_layout, parent, false)).apply {
+                        //TODO 這裡會有要幹嘛嗎？
+            }
+            return viewHolder(binding.root)
         }
 
         override fun getItemCount(): Int {
@@ -83,12 +85,25 @@ class HomeFragment: BaseFragment() {
 
         override fun onBindViewHolder(holder: viewHolder, position: Int) {
             holder.home_list_features_name.text = items.get(position)
+            holder.home_list_icon.setImageResource(
+                    when(holder.home_list_features_name.text){
+                        "餵食"-> R.drawable.baby_bottle
+                        "換尿布"-> R.drawable.diaper
+                        "睡眠"-> R.drawable.baby_bed
+                        "擠奶"-> R.drawable.milking
+                        "其他活動"-> R.drawable.other_doings
+                    else ->{
+                        R.drawable.baby_bed
+                }
+            })
+
             holder.itemView.setOnClickListener{
-                Log.d("JasonYang", "按！$position")
+                //點擊Item時做的事
             }
         }
 
         //TODO 怎麼還會看到 findViewById，是還要再建一個 Binding？
+        //TODO 哪裡寫錯了嗎？我的 view 取不到我 home_item_layout 裡的東西…
         inner class viewHolder(val view: View) : RecyclerView.ViewHolder(view){
             val home_list_icon = view.findViewById<ImageView>(R.id.home_list_icon)
             val home_list_features_name = view.findViewById<TextView>(R.id.home_list_features_name)

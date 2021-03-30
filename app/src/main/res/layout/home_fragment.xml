@@ -11,7 +11,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/pink">
 
         <ImageView
@@ -31,6 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@drawable/corners_setting"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title_view">
@@ -80,7 +81,7 @@
             app:layout_constraintTop_toBottomOf="@+id/two"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:background="@color/whitesmoke"
+            android:background="@drawable/corners_setting"
             tools:listitem="@layout/home_item_layout"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
