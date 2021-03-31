@@ -1,5 +1,6 @@
 package com.jason.babynotes.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,10 +24,6 @@ import com.jason.babynotes.viewmodel.HomeFeaturesViewModel
 class HomeFragment: BaseFragment() {
     val mViewModel by viewModels<HomeFeaturesViewModel>()
     lateinit var mBinding: HomeFragmentBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -57,24 +54,29 @@ class HomeFragment: BaseFragment() {
     /**
      * 1. 圓角無效？
      * 2. RecyclerView 沒辦法滑到更下面？
-     * 3. RecyclerView 的 Binding 似乎哪邊錯了？ view 沒辦法用 home_item_layout 裡面的元件？
-     *
      */
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun createRecyclerView(){
         val mRecyclerView: RecyclerView = mBinding.recyclerView
-
         mRecyclerView.adapter = ItemAdapter(mViewModel.mListData)
-        mRecyclerView.addItemDecoration(getRecyclerViewDivider(R.drawable.recycler_divider_line)!!)
+        //TODO 改成這樣寫就不用使用 !! 了，但為什麼語法糖又說不需要 ?
+        val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        R.drawable.recycler_divider_line?.let {
+            itemDecoration.setDrawable(resources.getDrawable(it))
+        }
+        mRecyclerView.addItemDecoration(itemDecoration)
         mRecyclerView.layoutManager = LinearLayoutManager(getBaseActivity())
     }
 
-    class ItemAdapter(val items: List<String>) : RecyclerView.Adapter<ItemAdapter.viewHolder>(){
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewHolder {
+    interface RecyclerViewClickListener{
+        fun onRecyclerViewItemClickListener()
+    }
+
+    class ItemAdapter(val items: List<String>, ) : RecyclerView.Adapter<ItemAdapter.MyHolder>(){
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
             var binding : HomeItemLayoutBinding = HomeItemLayoutBinding.bind(LayoutInflater.from(parent.context)
-                    .inflate(R.layout.home_item_layout, parent, false)).apply {
-                        //TODO 這裡會有要幹嘛嗎？
-            }
-            return viewHolder(binding.root)
+                    .inflate(R.layout.home_item_layout, parent, false))
+            return MyHolder(binding)
         }
 
         override fun getItemCount(): Int {
@@ -83,10 +85,10 @@ class HomeFragment: BaseFragment() {
             }
         }
 
-        override fun onBindViewHolder(holder: viewHolder, position: Int) {
-            holder.home_list_features_name.text = items.get(position)
-            holder.home_list_icon.setImageResource(
-                    when(holder.home_list_features_name.text){
+        override fun onBindViewHolder(holder: MyHolder, position: Int) {
+            holder.homeBinding.homeListFeaturesName.text = items.get(position)
+            holder.homeBinding.homeListIcon.setImageResource(
+                    when(holder.homeBinding.homeListFeaturesName.text){
                         "餵食"-> R.drawable.baby_bottle
                         "換尿布"-> R.drawable.diaper
                         "睡眠"-> R.drawable.baby_bed
@@ -97,23 +99,23 @@ class HomeFragment: BaseFragment() {
                 }
             })
 
+            //TODO OnClickListener事件應該可以拔到 ViewModel 裡面去做，這邊應該是做 observer 監聽點了要幹嘛對吧？
+            holder.homeBinding.homeListIcon.setOnClickListener {
+                Log.d("JasonYang", "點擊ICON$position")
+            }
+
             holder.itemView.setOnClickListener{
-                //點擊Item時做的事
+                Log.d("JasonYang","點擊Item")
+            }
+
+            holder.bind()
+        }
+
+        inner class MyHolder(var homeBinding: HomeItemLayoutBinding) : RecyclerView.ViewHolder(homeBinding.root){
+            fun bind(){
+                //executePendingBindings 非常重要，加了才有辦法自動更新資料
+                homeBinding.executePendingBindings()
             }
         }
-
-        //TODO 怎麼還會看到 findViewById，是還要再建一個 Binding？
-        //TODO 哪裡寫錯了嗎？我的 view 取不到我 home_item_layout 裡的東西…
-        inner class viewHolder(val view: View) : RecyclerView.ViewHolder(view){
-            val home_list_icon = view.findViewById<ImageView>(R.id.home_list_icon)
-            val home_list_features_name = view.findViewById<TextView>(R.id.home_list_features_name)
-            val home_list_alert = view.findViewById<ImageView>(R.id.home_list_alert)
-        }
-    }
-
-    private fun getRecyclerViewDivider(@DrawableRes drawableId: Int): ItemDecoration? {
-        val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        itemDecoration.setDrawable(resources.getDrawable(drawableId))
-        return itemDecoration
     }
 }
