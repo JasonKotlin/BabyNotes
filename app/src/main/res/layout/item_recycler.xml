@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.jason.babynotes.model.YouBikeStationData"/>
+        <variable
+            name="item"
+            type="com.jason.babynotes.model.YouBikeStationData" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".5" />
+        <TextView
+            android:id="@+id/tv_station_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{`場站名稱: ` + item.sna}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tool:text="場站名稱" />
+        <TextView
+            android:id="@+id/tv_addr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{`地址: ` + item.ar}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_station_name"
+            tool:text="地" />
+        <TextView
+            android:id="@+id/tv_bike_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{`場站目前車輛數量: ` + item.sbi}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_addr"
+            tool:text="場站目前車輛數量" />
+        <TextView
+            android:id="@+id/tv_park_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{`空位數量: ` + item.bemp}"
+            app:layout_constraintStart_toStartOf="@id/guide_50"
+            app:layout_constraintTop_toBottomOf="@+id/tv_addr"
+            tool:text="空位數量" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/design_default_color_primary_dark"
+            app:layout_constraintTop_toBottomOf="@id/tv_park_count" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
